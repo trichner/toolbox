@@ -1,0 +1,6 @@
+automation
+client_secret.json
+token.*.json
+
+dist/
+.idea/
