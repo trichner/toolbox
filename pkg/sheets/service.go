@@ -3,6 +3,7 @@ package sheets
 import (
 	"context"
 	"fmt"
+	"golang.org/x/oauth2"
 	"net/http"
 
 	"github.com/trichner/oauthflows"
@@ -45,9 +46,16 @@ func NewSheetService(ctx context.Context) (SheetsService, error) {
 	var err error
 	var client *http.Client
 
+	var oauthConfig = &oauth2.Config{
+		ClientID:     deobfuscate("11f54bda98e094e03def692dffdfa93fb0773efcf9258ea5f28c4a3e9825a102d2c0628a3a7205c43f719c757ae2dfcbae35eddd2e5c3f276c83ed10259203240be3afa1ce519e"),
+		ClientSecret: deobfuscate("74a04fb1f8fbc9b443ea2345e2fbad3198607ed6f22cdad9"),
+		Endpoint:     google.Endpoint,
+		Scopes:       scopes,
+	}
+
 	if client, err = google.DefaultClient(ctx, scopes...); err == nil {
 		// client already set
-	} else if client, err = oauthflows.NewClient(oauthflows.WithClientSecretsFile(clientSecretFile, scopes), oauthflows.WithFileTokenStore()); err == nil {
+	} else if client, err = oauthflows.NewClient(oauthflows.WithConfig(oauthConfig), oauthflows.WithTokenStore(&keyringTokenStore{})); err == nil {
 		// client already set
 	} else {
 		return nil, fmt.Errorf("cannot initialize oauth client: %w", err)

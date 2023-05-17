@@ -69,7 +69,7 @@ func (s *sheetOps) UpdateValues(data [][]string) error {
 func (s *sheetOps) AppendValues(data [][]string) error {
 	sheet, err := s.Get()
 	if err != nil {
-		return fmt.Errorf("unable to append data, spreadsheet='%s' sheetId='%d': %w", s.spreadsheetId, s.sheetId, err)
+		return fmt.Errorf("unable to append data, spreadsheet='%s' sheetId='%d': %w", s.spreadsheetId(), s.sheetId, err)
 	}
 
 	insertRange := fmt.Sprintf("'%s'!A:A", sheet.Title)
@@ -85,7 +85,7 @@ func (s *sheetOps) AppendValues(data [][]string) error {
 		Do()
 
 	if err != nil {
-		return fmt.Errorf("unable to append data, spreadsheet='%s' sheetId='%d': %w", s.spreadsheetId, s.sheetId, err)
+		return fmt.Errorf("unable to append data, spreadsheet='%s' sheetId='%d': %w", s.spreadsheetId(), s.sheetId, err)
 	}
 
 	return nil
