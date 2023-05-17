@@ -1,11 +1,18 @@
 package json2sheet
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"github.com/trichner/toolbox/pkg/sheets"
 	"io"
 	"net/url"
+)
+
+const (
+	streamTypeUnknown = iota
+	streamTypeObjects
+	streamTypeArrays
 )
 
 type SheetWriter interface {
@@ -62,9 +69,24 @@ func WriteToNewSheet(r io.Reader) (*url.URL, error) {
 		return nil, err
 	}
 
-	err = WriteObjectsTo(sheet, r)
-	if err != nil {
-		return nil, err
+	br := bufio.NewReader(r)
+
+	streamType := streamTypeUnknown
+	peek, err := br.Peek(2)
+	if err == nil {
+		streamType = guessJsonStreamType(peek)
+	}
+
+	if streamType == streamTypeArrays {
+		err = WriteArraysTo(sheet, br)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err = WriteObjectsTo(sheet, br)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	info, err := ss.Get()
@@ -74,4 +96,14 @@ func WriteToNewSheet(r io.Reader) (*url.URL, error) {
 
 	raw := fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s/edit#gid=0", info.Id)
 	return url.Parse(raw)
+}
+
+func guessJsonStreamType(peeked []byte) int {
+	if peeked[0] == '[' {
+		return streamTypeArrays
+	}
+	if peeked[0] == '{' {
+		return streamTypeObjects
+	}
+	return streamTypeUnknown
 }
