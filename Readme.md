@@ -6,8 +6,12 @@
 #--- initial setup
 brew install go
 
-#setup the 'GOPATH'
+# setup the 'GOPATH'
 export GOPATH=$HOME/workspaces/go
+
+#--- install from repo
+git clone git@github.com:trichner/toolbox.git
+cd toolbox
 
 # fetch all dependencies
 go get
@@ -17,6 +21,9 @@ go install ./...
 
 # binaries can be found here:
 ls $GOPATH/bin/
+
+#--- OPTIONAL: install one-liner
+go install github.com/trichner/toolbox/cmd/tb@latest
 
 # add them to your path
 export PATH=$PATH:$GOPATH/bin
