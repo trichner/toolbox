@@ -7,7 +7,7 @@
 brew install go
 
 # setup the 'GOPATH'
-export GOPATH=$HOME/workspaces/go
+export GOPATH=$(go env GOPATH)
 
 #--- install from repo
 git clone git@github.com:trichner/toolbox.git
