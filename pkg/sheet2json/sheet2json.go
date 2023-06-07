@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/trichner/toolbox/pkg/sheets"
 	"io"
 	"strconv"
 	"time"
+
+	"github.com/trichner/toolbox/pkg/sheets"
 )
 
 func ReadFromSheet(spreadsheetId string, sheetId int64, w io.Writer) error {
@@ -63,7 +64,6 @@ func writeSheetToJsonObjects(sheet sheets.SheetOps, w JsonWriter) error {
 		m := map[string]any{}
 		for j, cell := range row {
 			if cell == "" {
-
 			}
 			m[headers[j]] = cell
 		}
@@ -75,7 +75,6 @@ func writeSheetToJsonObjects(sheet sheets.SheetOps, w JsonWriter) error {
 }
 
 func parseHeaders(row []any) []string {
-
 	headers := make([]string, len(row))
 	for i, v := range row {
 		headers[i] = cellToString(v)

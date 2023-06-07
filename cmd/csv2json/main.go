@@ -1,9 +1,10 @@
 package csv2json
 
 import (
-	c2j "github.com/trichner/toolbox/pkg/csv2json"
 	"log"
 	"os"
+
+	c2j "github.com/trichner/toolbox/pkg/csv2json"
 )
 
 func Exec(args []string) {

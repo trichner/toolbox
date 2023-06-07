@@ -4,9 +4,10 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/trichner/toolbox/pkg/sheets"
 	"io"
 	"net/url"
+
+	"github.com/trichner/toolbox/pkg/sheets"
 )
 
 const (
@@ -20,7 +21,6 @@ type SheetWriter interface {
 }
 
 func UpdateSheet(spreadsheetUrl string, r io.Reader) (*url.URL, error) {
-
 	ctx := context.Background()
 
 	svc, err := sheets.NewSheetService(ctx)

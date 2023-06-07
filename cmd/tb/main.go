@@ -1,10 +1,11 @@
 package main
 
 import (
+	"os"
+
 	"github.com/trichner/toolbox/cmd/csv2json"
 	"github.com/trichner/toolbox/cmd/sheet2json"
 	"github.com/trichner/toolbox/pkg/cmdreg"
-	"os"
 
 	"github.com/trichner/toolbox/cmd/sql2json"
 

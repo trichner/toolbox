@@ -2,15 +2,16 @@ package sheet2json
 
 import (
 	"fmt"
-	"github.com/alecthomas/kong"
-	"github.com/posener/complete/v2"
-	"github.com/posener/complete/v2/predict"
-	"github.com/trichner/toolbox/pkg/sheet2json"
 	"log"
 	"net/url"
 	"os"
 	"regexp"
 	"strconv"
+
+	"github.com/alecthomas/kong"
+	"github.com/posener/complete/v2"
+	"github.com/posener/complete/v2/predict"
+	"github.com/trichner/toolbox/pkg/sheet2json"
 )
 
 var cli struct {
@@ -20,7 +21,6 @@ var cli struct {
 }
 
 func Completions() complete.Completer {
-
 	parser := kong.Must(&cli)
 
 	flags := map[string]complete.Predictor{}
@@ -62,7 +62,6 @@ func Exec(args []string) {
 
 // urlToSpreadsheetID parses a URL to a spreadsheet such as: https://docs.google.com/spreadsheets/d/1dAN8MO9NDVPqVIoOxC9H_j4Ir5c1viQ97igGdXOyXsU/edit#gid=886605725
 func urlToSpreadsheetID(u string) (string, int64, error) {
-
 	parsed, err := url.Parse(u)
 	if err != nil {
 		return "", -1, err

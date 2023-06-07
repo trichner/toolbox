@@ -2,10 +2,11 @@ package json2sheet
 
 import (
 	"fmt"
-	"github.com/alecthomas/kong"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/alecthomas/kong"
 
 	"github.com/trichner/toolbox/pkg/json2sheet"
 )
@@ -33,5 +34,4 @@ func Exec(args []string) {
 		}
 		fmt.Println(url)
 	}
-
 }

@@ -25,11 +25,10 @@ func (c *completionCommand) SubCmdGet(cmd string) complete.Completer {
 }
 
 func (c *CommandRegistry) setupCompletions(program string) {
-
 	if c.program != program {
 		cmd, ok := c.commands[program]
 		if !ok || cmd.completer == nil {
-			//no completions, nothing to set up
+			// no completions, nothing to set up
 			return
 		}
 		complete.Complete(program, cmd.completer)

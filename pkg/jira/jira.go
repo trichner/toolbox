@@ -103,14 +103,6 @@ func (j *JiraService) GetByKey(key string) (*Issue, error) {
 	return nil, fmt.Errorf("found multiple issues for the same key: " + key)
 }
 
-func (j *JiraService) SearchInFixVersion(fixVersion string) ([]Issue, error) {
-	issues, _, err := j.client.Issue.Search(fmt.Sprintf("fixVersion = %s", fixVersion), nil)
-	if err != nil {
-		return nil, err
-	}
-	return mapJiraListToVoList(issues), nil
-}
-
 func (j *JiraService) GetVersion(projectId, version string) (*Version, error) {
 	p, _, err := j.client.Project.Get(projectId)
 	if err != nil {
@@ -124,14 +116,6 @@ func (j *JiraService) GetVersion(projectId, version string) (*Version, error) {
 
 	v := mapJiraVersion(jiraVersion)
 	return v, nil
-}
-
-func (j *JiraService) SearchByLabel(label string) ([]Issue, error) {
-	issues, _, err := j.client.Issue.Search(fmt.Sprintf("labels = %q", label), nil)
-	if err != nil {
-		return nil, err
-	}
-	return mapJiraListToVoList(issues), nil
 }
 
 func (j *JiraService) SearchByQuery(query string) ([]Issue, error) {

@@ -9,7 +9,6 @@ import (
 
 // ParseSpreadsheetUrl parses a URL to a spreadsheet such as: https://docs.google.com/spreadsheets/d/1dAN8MO9NDVPqVIoOxC9H_j4Ir5c1viQ97igGdXOyXsU/edit#gid=886605725
 func ParseSpreadsheetUrl(u string) (string, int64, error) {
-
 	parsed, err := url.Parse(u)
 	if err != nil {
 		return "", -1, err

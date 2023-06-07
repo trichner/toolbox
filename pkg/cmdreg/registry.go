@@ -2,11 +2,12 @@ package cmdreg
 
 import (
 	"fmt"
-	"github.com/posener/complete/v2"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/posener/complete/v2"
 
 	"golang.org/x/exp/maps"
 )
@@ -52,7 +53,6 @@ type CommandRegistry struct {
 }
 
 func New(options ...Option) *CommandRegistry {
-
 	cfg := &registryConfig{program: defaultProgramName}
 	for _, o := range options {
 		if err := o(cfg); err != nil {
