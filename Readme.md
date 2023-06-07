@@ -1,50 +1,33 @@
 # Thomas' Automation Tools
 
-## Quickstart
+## Installation
 
-```
-#--- initial setup
-brew install go
-
-# setup the 'GOPATH'
-export GOPATH=$(go env GOPATH)
-
-#--- install from repo
-git clone git@github.com:trichner/toolbox.git
-cd toolbox
-
-# fetch all dependencies
-go get
-
-# install the binaries
-go install ./...
-
-# binaries can be found here:
-ls $GOPATH/bin/
-
-#--- OPTIONAL: install one-liner
-go install github.com/trichner/toolbox/cmd/tb@latest
-
-# add them to your path
-export PATH=$PATH:$GOPATH/bin
-
-#--- update the binaries whenever code changes
-
-go install ./...
+```shell
+go install github.com/trichner/tb@latest
 ```
 
 ## TL;DR
 
 ```bash
-tb sheet2json --spreadsheet-url=<sheetUrl>
-```
-
-```bash
-tb csv2json < some.csv | jq .
+printf "a,b,c\nhello,2,3" | tb csv2json | jq .
 ```
 
 ```bash
 echo '{"a":1, "b":true}' | tb json2sheet
+```
+
+```bash
+tb sheet2json --spreadsheet-url=<sheetUrl>
+```
+
+## Bash 'command not found'
+
+```shell
+# binaries can be found here:
+ls "$(go env GOPATH)/bin/"
+
+# add them to your path if not already done
+export PATH=$PATH:$(go env GOPATH)/bin
 ```
 
 ## Authentication
@@ -79,8 +62,3 @@ via `export GITHUB_TOKEN=$(cat ~/.config/github/token.txt | tr -d '\n')`
     }
     ```
 3. put the file into `~/.config/jira/credentials.json`
-
-### Freshdesk
-
-1. create an API key
-2. set the `FRESHDESK_TOKEN` environment variable, e.g. `export FRESHDESK_TOKEN=<your token>`
