@@ -16,8 +16,12 @@ const (
 	streamTypeArrays
 )
 
-type SheetWriter interface {
+type SheetUpdater interface {
 	UpdateValues(data [][]string) error
+}
+
+type SheetAppender interface {
+	AppendValues(data [][]string) error
 }
 
 func UpdateSheet(spreadsheetUrl string, r io.Reader) (*url.URL, error) {
@@ -78,12 +82,13 @@ func WriteToNewSheet(r io.Reader) (*url.URL, error) {
 	}
 
 	if streamType == streamTypeArrays {
-		err = WriteArraysTo(sheet, br)
+		//using append makes chunking easier and auto-extends the range
+		err = AppendArraysTo(sheet, br)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		err = WriteObjectsTo(sheet, br)
+		err = AppendObjectsTo(sheet, br)
 		if err != nil {
 			return nil, err
 		}

@@ -1,6 +1,7 @@
 package json2sheet
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -9,35 +10,48 @@ import (
 	"github.com/trichner/toolbox/pkg/jsontree/lexer"
 )
 
-func WriteArraysTo(to SheetWriter, from io.Reader) error {
-	var rows [][]string
+func WriteArraysTo(to SheetUpdater, from io.Reader) error {
 
-	l := lexer.NewLexer(from)
-	for {
-		root, err := jsontree.Parse(l)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-
-		if root.Type() != ast.NodeTypeArray {
-			return fmt.Errorf("json object is not an array: %s", root.Type())
-		}
-
-		node := root.(ast.ArrayNode)
-		row := make([]string, len(node.Items()))
-		for i, v := range node.Items() {
-			row[i] = toString(v)
-		}
-		rows = append(rows, row)
+	rows, err := mapArraysToRows(from)
+	if err != nil {
+		return err
 	}
 
 	return to.UpdateValues(rows)
 }
 
-func WriteObjectsTo(to SheetWriter, from io.Reader) error {
+func WriteObjectsTo(to SheetUpdater, from io.Reader) error {
+
+	rows, err := mapObjectsToRows(from)
+	if err != nil {
+		return err
+	}
+
+	return to.UpdateValues(rows)
+}
+
+func AppendArraysTo(to SheetAppender, from io.Reader) error {
+
+	rows, err := mapArraysToRows(from)
+	if err != nil {
+		return err
+	}
+
+	return to.AppendValues(rows)
+}
+
+func AppendObjectsTo(to SheetAppender, from io.Reader) error {
+
+	rows, err := mapObjectsToRows(from)
+	if err != nil {
+		return err
+	}
+
+	return to.AppendValues(rows)
+}
+
+func mapObjectsToRows(from io.Reader) ([][]string, error) {
+
 	var rows [][]string
 
 	l := lexer.NewLexer(from)
@@ -53,11 +67,11 @@ func WriteObjectsTo(to SheetWriter, from io.Reader) error {
 			break
 		}
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		if root.Type() != ast.NodeTypeObject {
-			return fmt.Errorf("json is not an object: %s", root.Type())
+			return nil, fmt.Errorf("json is not an object: %s", root.Type())
 		}
 
 		node := root.(ast.ObjectNode)
@@ -69,8 +83,34 @@ func WriteObjectsTo(to SheetWriter, from io.Reader) error {
 	}
 
 	rows[0] = headersToRow(headers)
+	return rows, nil
+}
 
-	return to.UpdateValues(rows)
+func mapArraysToRows(from io.Reader) ([][]string, error) {
+
+	var rows [][]string
+	l := lexer.NewLexer(from)
+	for {
+		root, err := jsontree.Parse(l)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		if root.Type() != ast.NodeTypeArray {
+			return nil, fmt.Errorf("json object is not an array: %s", root.Type())
+		}
+
+		node := root.(ast.ArrayNode)
+		row := make([]string, len(node.Items()))
+		for i, v := range node.Items() {
+			row[i] = toString(v)
+		}
+		rows = append(rows, row)
+	}
+	return rows, nil
 }
 
 func headersToRow(headers map[string]int) []string {
@@ -121,6 +161,10 @@ func toString(n ast.Node) string {
 		typed := n.(ast.TextNode)
 		return typed.Value()
 	default:
+		bytes, err := json.Marshal(n)
+		if err == nil {
+			return string(bytes)
+		}
 		return fmt.Sprintf("%s", n)
 	}
 }

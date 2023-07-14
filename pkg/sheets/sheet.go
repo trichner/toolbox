@@ -2,6 +2,7 @@ package sheets
 
 import (
 	"fmt"
+	"golang.org/x/exp/constraints"
 
 	googlesheets "google.golang.org/api/sheets/v4"
 )
@@ -30,6 +31,11 @@ func (s *sheetOps) Get() (*Sheet, error) {
 
 func (s *sheetOps) UpdateValues(data [][]string) error {
 	values := toValues(data)
+
+	if err := s.grow(values); err != nil {
+		return err
+	}
+
 	filterRange := &googlesheets.DataFilterValueRange{
 		DataFilter: &googlesheets.DataFilter{
 			GridRange: &googlesheets.GridRange{
@@ -63,6 +69,53 @@ func (s *sheetOps) UpdateValues(data [][]string) error {
 		return fmt.Errorf("unable to update data from sheet: %w", err)
 	}
 
+	return nil
+}
+
+func (s *sheetOps) grow(values [][]any) error {
+
+	sheet, err := s.filteredSheets(func(p *googlesheets.SheetProperties) bool {
+		return p.SheetId == s.sheetId
+	})
+	if err != nil {
+		return err
+	}
+	curColumns := sheet.GridProperties.ColumnCount
+	curRows := sheet.GridProperties.RowCount
+
+	var appendDimensions []*googlesheets.AppendDimensionRequest
+	missingColumns := max(len(values[0])-int(curColumns), 0)
+	if missingColumns > 0 {
+		appendDimensions = append(appendDimensions, &googlesheets.AppendDimensionRequest{
+			Dimension: "COLUMNS",
+			Length:    int64(missingColumns),
+			SheetId:   s.sheetId,
+		})
+	}
+	missingRows := max(len(values)-int(curRows), 0)
+	if missingRows > 0 {
+		appendDimensions = append(appendDimensions, &googlesheets.AppendDimensionRequest{
+			Dimension: "ROWS",
+			Length:    int64(missingRows),
+			SheetId:   s.sheetId,
+		})
+	}
+
+	if len(appendDimensions) == 0 {
+		return nil
+	}
+
+	var requests []*googlesheets.Request
+	for _, r := range appendDimensions {
+		requests = append(requests, &googlesheets.Request{AppendDimension: r})
+	}
+	req := &googlesheets.BatchUpdateSpreadsheetRequest{
+		Requests: requests,
+	}
+	_, err = s.service.Spreadsheets.BatchUpdate(s.spreadsheetId(), req).Do()
+	if err != nil {
+		return fmt.Errorf("failed to expand data range to fit data: %w", err)
+	}
 	return nil
 }
 
@@ -127,4 +180,11 @@ func toValues(data [][]string) [][]interface{} {
 		}
 	}
 	return values
+}
+
+func max[T constraints.Ordered](a1, a2 T) T {
+	if a1 > a2 {
+		return a1
+	}
+	return a2
 }
