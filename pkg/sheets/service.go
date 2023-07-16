@@ -16,7 +16,6 @@ import (
 
 const (
 	keyringItemServiceName = "toolbox googleapis.com"
-	keyringItemDescription = "Jira API Token"
 )
 
 var scopes = []string{
@@ -60,7 +59,7 @@ func NewSheetService(ctx context.Context) (SheetsService, error) {
 
 	if client, err = google.DefaultClient(ctx, scopes...); err == nil {
 		// client already set
-	} else if client, err = oauthflows.NewClient(oauthflows.WithConfig(oauthConfig), oauthflows.WithTokenStore(oauth2keystore.NewKeyringTokenStore(keyringItemServiceName, keyringItemDescription))); err == nil {
+	} else if client, err = oauthflows.NewClient(oauthflows.WithConfig(oauthConfig), oauthflows.WithTokenStore(oauth2keystore.NewKeyringTokenStore(keyringItemServiceName))); err == nil {
 		// client already set
 	} else {
 		return nil, fmt.Errorf("cannot initialize oauth client: %w", err)

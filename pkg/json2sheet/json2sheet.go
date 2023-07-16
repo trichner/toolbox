@@ -82,7 +82,7 @@ func WriteToNewSheet(r io.Reader) (*url.URL, error) {
 	}
 
 	if streamType == streamTypeArrays {
-		//using append makes chunking easier and auto-extends the range
+		// using append makes chunking easier and auto-extends the range
 		err = AppendArraysTo(sheet, br)
 		if err != nil {
 			return nil, err

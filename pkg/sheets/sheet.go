@@ -2,6 +2,7 @@ package sheets
 
 import (
 	"fmt"
+
 	"golang.org/x/exp/constraints"
 
 	googlesheets "google.golang.org/api/sheets/v4"
@@ -73,7 +74,6 @@ func (s *sheetOps) UpdateValues(data [][]string) error {
 }
 
 func (s *sheetOps) grow(values [][]any) error {
-
 	sheet, err := s.filteredSheets(func(p *googlesheets.SheetProperties) bool {
 		return p.SheetId == s.sheetId
 	})

@@ -11,7 +11,6 @@ import (
 )
 
 func WriteArraysTo(to SheetUpdater, from io.Reader) error {
-
 	rows, err := mapArraysToRows(from)
 	if err != nil {
 		return err
@@ -21,7 +20,6 @@ func WriteArraysTo(to SheetUpdater, from io.Reader) error {
 }
 
 func WriteObjectsTo(to SheetUpdater, from io.Reader) error {
-
 	rows, err := mapObjectsToRows(from)
 	if err != nil {
 		return err
@@ -31,7 +29,6 @@ func WriteObjectsTo(to SheetUpdater, from io.Reader) error {
 }
 
 func AppendArraysTo(to SheetAppender, from io.Reader) error {
-
 	rows, err := mapArraysToRows(from)
 	if err != nil {
 		return err
@@ -41,7 +38,6 @@ func AppendArraysTo(to SheetAppender, from io.Reader) error {
 }
 
 func AppendObjectsTo(to SheetAppender, from io.Reader) error {
-
 	rows, err := mapObjectsToRows(from)
 	if err != nil {
 		return err
@@ -51,7 +47,6 @@ func AppendObjectsTo(to SheetAppender, from io.Reader) error {
 }
 
 func mapObjectsToRows(from io.Reader) ([][]string, error) {
-
 	var rows [][]string
 
 	l := lexer.NewLexer(from)
@@ -87,7 +82,6 @@ func mapObjectsToRows(from io.Reader) ([][]string, error) {
 }
 
 func mapArraysToRows(from io.Reader) ([][]string, error) {
-
 	var rows [][]string
 	l := lexer.NewLexer(from)
 	for {
