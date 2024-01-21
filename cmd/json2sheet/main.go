@@ -23,13 +23,13 @@ func Exec(ctx context.Context, args []string) {
 
 	spreadsheetUrl := strings.TrimSpace(cli.SpreadsheetUrl)
 	if spreadsheetUrl != "" {
-		url, err := json2sheet.UpdateSheet(spreadsheetUrl, os.Stdin)
+		url, err := json2sheet.UpdateSheet(ctx, spreadsheetUrl, os.Stdin)
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println(url)
 	} else {
-		url, err := json2sheet.WriteToNewSheet(os.Stdin)
+		url, err := json2sheet.WriteToNewSheet(ctx, os.Stdin)
 		if err != nil {
 			log.Fatal(err)
 		}

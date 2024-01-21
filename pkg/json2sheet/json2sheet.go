@@ -24,8 +24,7 @@ type SheetAppender interface {
 	AppendValues(data [][]string) error
 }
 
-func UpdateSheet(spreadsheetUrl string, r io.Reader) (*url.URL, error) {
-	ctx := context.Background()
+func UpdateSheet(ctx context.Context, spreadsheetUrl string, r io.Reader) (*url.URL, error) {
 
 	svc, err := sheets.NewSheetService(ctx)
 	if err != nil {
@@ -55,8 +54,7 @@ func UpdateSheet(spreadsheetUrl string, r io.Reader) (*url.URL, error) {
 	return url.Parse(spreadsheetUrl)
 }
 
-func WriteToNewSheet(r io.Reader) (*url.URL, error) {
-	ctx := context.Background()
+func WriteToNewSheet(ctx context.Context, r io.Reader) (*url.URL, error) {
 
 	svc, err := sheets.NewSheetService(ctx)
 	if err != nil {
