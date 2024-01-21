@@ -11,9 +11,7 @@ import (
 	"github.com/trichner/toolbox/pkg/sheets"
 )
 
-func ReadFromSheet(spreadsheetId string, sheetId int64, w io.Writer) error {
-	ctx := context.Background()
-
+func ReadFromSheet(ctx context.Context, spreadsheetId string, sheetId int64, w io.Writer) error {
 	svc, err := sheets.NewSheetService(ctx)
 	if err != nil {
 		return err

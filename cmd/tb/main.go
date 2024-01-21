@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"github.com/trichner/toolbox/cmd/csv2json"
@@ -26,11 +27,12 @@ func main() {
 
 	r.RegisterFunc("help", help(r))
 
-	r.Exec(os.Args)
+	ctx := context.Background()
+	r.Exec(ctx, os.Args)
 }
 
 func help(r *cmdreg.CommandRegistry) cmdreg.CommandFunc {
-	return func(args []string) {
+	return func(_ context.Context, args []string) {
 		r.PrintHelp(os.Stdout)
 	}
 }

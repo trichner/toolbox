@@ -1,6 +1,7 @@
 package sheet2json
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/url"
@@ -33,7 +34,7 @@ func Completions() complete.Completer {
 	return &complete.Command{Flags: flags}
 }
 
-func Exec(args []string) {
+func Exec(ctx context.Context, args []string) {
 	parser := kong.Must(&cli, kong.Name(args[0]))
 	_, err := parser.Parse(args[1:])
 	parser.FatalIfErrorf(err)
@@ -54,7 +55,7 @@ func Exec(args []string) {
 		log.Fatal(fmt.Errorf("spreadsheetId and sheetId are not set"))
 	}
 
-	err = sheet2json.ReadFromSheet(spreadsheetId, sheetId, os.Stdout)
+	err = sheet2json.ReadFromSheet(ctx, spreadsheetId, sheetId, os.Stdout)
 	if err != nil {
 		log.Fatal(err)
 	}

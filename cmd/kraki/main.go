@@ -62,7 +62,7 @@ var cli struct {
 	} `cmd:"" help:"Download all exports of a matter"`
 }
 
-func Exec(args []string) {
+func Exec(c context.Context, args []string) {
 	k, err := kong.New(&cli)
 	if err != nil {
 		log.Fatal(err)

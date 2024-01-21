@@ -1,6 +1,7 @@
 package sql2json
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -20,7 +21,7 @@ type cli struct {
 	Query      string `help:"a sql query fetching the results" required:"" env:"SQL2JSON_QUERY"`
 }
 
-func Exec(args []string) {
+func Exec(ctx context.Context, args []string) {
 	// kong expects only actual arguments and not the program itself
 	args = args[1:]
 

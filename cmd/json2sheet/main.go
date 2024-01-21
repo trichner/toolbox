@@ -1,6 +1,7 @@
 package json2sheet
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -15,7 +16,7 @@ var cli struct {
 	SpreadsheetUrl string `help:"complete URL to the spreadsheet"`
 }
 
-func Exec(args []string) {
+func Exec(ctx context.Context, args []string) {
 	parser := kong.Must(&cli, kong.Name(args[0]))
 	_, err := parser.Parse(args[1:])
 	parser.FatalIfErrorf(err)

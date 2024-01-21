@@ -1,6 +1,7 @@
 package jiracli
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -27,17 +28,17 @@ var cli struct {
 	} `cmd:"" help:"Find or update issues"`
 }
 
-func Exec(args []string) {
+func Exec(ctx context.Context, args []string) {
 	k, err := kong.New(&cli)
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx, err := k.Parse(args[1:])
+	kctx, err := k.Parse(args[1:])
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	switch ctx.Command() {
+	switch kctx.Command() {
 	case "create-user":
 
 		email := cli.CreateUser.Email
@@ -47,7 +48,7 @@ func Exec(args []string) {
 	case "issues":
 		queryIssues(cli.Issues.Query)
 	default:
-		panic(ctx.Command())
+		panic(kctx.Command())
 	}
 }
 

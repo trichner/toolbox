@@ -1,6 +1,7 @@
 package cmdreg
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -39,7 +40,7 @@ func WithCompletion(c complete.Completer) CommandOption {
 }
 
 type Command interface {
-	Exec(args []string)
+	Exec(ctx context.Context, args []string)
 }
 
 type commandSet struct {
@@ -95,7 +96,7 @@ func (c *CommandRegistry) List() []string {
 	return maps.Keys(c.commands)
 }
 
-func (c *CommandRegistry) execCommand(args []string) error {
+func (c *CommandRegistry) execCommand(ctx context.Context, args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("no arguments")
 	}
@@ -106,11 +107,11 @@ func (c *CommandRegistry) execCommand(args []string) error {
 	if !ok {
 		return fmt.Errorf("unknown command '%s'", cmd)
 	}
-	runner.command.Exec(args)
+	runner.command.Exec(ctx, args)
 	return nil
 }
 
-func (c *CommandRegistry) Exec(args []string) {
+func (c *CommandRegistry) Exec(ctx context.Context, args []string) {
 	if len(args) == 0 {
 		log.Fatal("no program in arguments")
 	}
@@ -121,7 +122,7 @@ func (c *CommandRegistry) Exec(args []string) {
 		args = args[1:]
 	}
 
-	err := c.execCommand(args)
+	err := c.execCommand(ctx, args)
 	if err != nil {
 		log.Printf("%s", err)
 		c.PrintHelp(os.Stderr)
@@ -137,8 +138,8 @@ func (c *CommandRegistry) PrintHelp(w io.Writer) {
 	}
 }
 
-type CommandFunc func(args []string)
+type CommandFunc func(ctx context.Context, args []string)
 
-func (c CommandFunc) Exec(args []string) {
-	c(args)
+func (c CommandFunc) Exec(ctx context.Context, args []string) {
+	c(ctx, args)
 }
